@@ -1,5 +1,6 @@
 desc 'Say hello!'
 task :import_csv => :environment do
+  Item.destroy_all
   Customer.destroy_all
   Merchant.destroy_all
 
@@ -26,5 +27,18 @@ task :import_csv => :environment do
       new_merchant.created_at = row["created_at"]
       new_merchant.updated_at = row["updated_at"]
       new_merchant.save
+    end
+
+  csv_text = File.read(Rails.root.join('lib', 'data', 'items.csv'))
+  csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    csv.each do |row|
+      new_item = Item.new
+      new_item.name = row["name"]
+      new_item.description = row["description"]
+      new_item.merchant_id = row["merchant_id"]
+      new_item.created_at = row["created_at"]
+      new_item.updated_at = row["updated_at"]
+      new_item.unit_price = row["unit_price"].insert(-3, '.').to_f
+      new_item.save
     end
 end
