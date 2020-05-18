@@ -34,8 +34,8 @@ describe "Merchants API" do
     merchant4 = Merchant.create!(name: "Bobs")
     original_name = Merchant.last.name
 
-    new_merchant_params = {name: "The Updated One"}
-    patch "/api/v1/merchants/#{merchant4.id}", params: {merchant: new_merchant_params}
+    updated_merchant_params = {name: "The Updated One"}
+    patch "/api/v1/merchants/#{merchant4.id}", params: {merchant: updated_merchant_params}
     expect(response).to be_successful
     updated_merchant = Merchant.last
     expect(updated_merchant.name).to_not eq(original_name)
@@ -44,11 +44,23 @@ describe "Merchants API" do
 
   it "can create a new merchant" do
     merchant1 = Merchant.create!(name: "Jims")
-    merchant_params = {name: "The New One"}
+    new_merchant_params = {name: "The New One"}
 
-    post "/api/v1/merchants", params: {merchant: merchant_params}
+    post "/api/v1/merchants", params: {merchant: new_merchant_params}
     expect(response).to be_successful
     new_merchant = Merchant.last
     expect(new_merchant.name).to eq("The New One")
+  end
+
+  it "can delete a merchant" do
+    merchant1 = Merchant.create!(name: "Jims")
+    merchant2 = Merchant.create!(name: "Tims")
+    merchant3 = Merchant.create!(name: "Dougs")
+    merchant4 = Merchant.create!(name: "Bobs")
+
+    delete "/api/v1/merchants/#{merchant4.id}"
+    expect(response).to be_successful
+    expect(Merchant.all.count).to eq(3)
+    expect{Merchant.find(merchant4.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 end
