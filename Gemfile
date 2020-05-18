@@ -15,6 +15,7 @@ gem 'puma', '~> 3.7'
 gem 'faraday'
 gem 'figaro'
 gem 'rspec-rails'
+gem 'fast_jsonapi'
 gem 'simplecov', require: false, group: :test
 
 
