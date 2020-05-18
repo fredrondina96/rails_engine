@@ -61,6 +61,8 @@ GEM
     erubi (1.9.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
+    fast_jsonapi (1.5)
+      activesupport (>= 4.2)
     ffi (1.12.2)
     figaro (1.2.0)
       thor (>= 0.14.0, < 2)
@@ -190,6 +192,7 @@ DEPENDENCIES
   capybara
   csv
   faraday
+  fast_jsonapi
   figaro
   listen (>= 3.0.5, < 3.2)
   orderly
