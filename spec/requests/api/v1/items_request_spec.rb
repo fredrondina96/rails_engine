@@ -50,10 +50,23 @@ describe "items API" do
 
     post "/api/v1/items", params: {item: new_item_params}
     expect(response).to be_successful
-    new_item = Item.last 
+    new_item = Item.last
     expect(new_item.name).to eq(new_item_params[:name])
     item = JSON.parse(response.body)['data']
     expect(item['attributes']['name']).to eq(new_item_params[:name])
     expect(item['attributes']['description']).to eq(new_item_params[:description])
   end
+
+  it "can delete an item" do
+    merchant1 = Merchant.create!(name: "Jims")
+    item1 = merchant1.items.create!(name: "Example1", description: "D1", unit_price: 31.11)
+    item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
+    item3 = merchant1.items.create!(name: "Example3", description: "D3", unit_price: 33.33)
+
+    delete "/api/v1/items/#{item3.id}"
+    expect(response).to be_successful
+    expect(Item.all.count).to eq(2)
+    expect{Item.find(item3.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
 end
