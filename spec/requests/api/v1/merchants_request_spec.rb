@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe "Merchants API" do
-
   it "returns all merchants" do
     merchant1 = Merchant.create!(name: "Jims")
     merchant2 = Merchant.create!(name: "Tims")
