@@ -34,11 +34,21 @@ describe "Merchants API" do
     merchant4 = Merchant.create!(name: "Bobs")
     original_name = Merchant.last.name
 
-    new_merchant_params = {name: "The New One"}
+    new_merchant_params = {name: "The Updated One"}
     patch "/api/v1/merchants/#{merchant4.id}", params: {merchant: new_merchant_params}
     expect(response).to be_successful
     updated_merchant = Merchant.last
     expect(updated_merchant.name).to_not eq(original_name)
-    expect(updated_merchant.name).to eq("The New One")
+    expect(updated_merchant.name).to eq("The Updated One")
+  end
+
+  it "can create a new merchant" do
+    merchant1 = Merchant.create!(name: "Jims")
+    merchant_params = {name: "The New One"}
+
+    post "/api/v1/merchants", params: {merchant: merchant_params}
+    expect(response).to be_successful
+    new_merchant = Merchant.last
+    expect(new_merchant.name).to eq("The New One")
   end
 end
