@@ -62,4 +62,22 @@ describe "Merchants API" do
     expect(Merchant.all.count).to eq(3)
     expect{Merchant.find(merchant4.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "can return the items of a particular merchant" do
+    merchant1 = Merchant.create!(name: "Jims")
+    merchant2 = Merchant.create!(name: "BoB")
+    item1 = merchant1.items.create!(name: "Example1", description: "D1", unit_price: 31.11)
+    item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
+    item3 = merchant1.items.create!(name: "Example3", description: "D3", unit_price: 33.33)
+    item4 = merchant2.items.create!(name: "Example4", description: "D4", unit_price: 33.33)
+    item5 = merchant2.items.create!(name: "Example5", description: "D5", unit_price: 33.33)
+
+    get "/api/v1/merchants/#{merchant1.id}/items"
+    expect(response).to be_successful
+    merchant1_items = JSON.parse(response.body)["data"]
+    expect(merchant1_items.length).to eq(3)
+    get "/api/v1/merchants/#{merchant2.id}/items"
+    merchant2_items = JSON.parse(response.body)["data"]
+    expect(merchant2_items.length).to eq(2)
+  end
 end
