@@ -79,6 +79,7 @@ describe "items API" do
     expect(response).to be_successful
     merchant_info = JSON.parse(response.body)["data"]
     expect(merchant_info["id"]).to eq(merchant1.id.to_s)
+    expect(merchant_info["attributes"]["name"]).to eq("Jims")
   end
 
 end
