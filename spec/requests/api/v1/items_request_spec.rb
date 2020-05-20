@@ -82,4 +82,41 @@ describe "items API" do
     expect(merchant_info["attributes"]["name"]).to eq("Jims")
   end
 
+  it "can send an exact item matching a search" do
+    merchant1 = Merchant.create!(name: "Jims")
+    item1 = merchant1.items.create!(name: "chair", description: "you can sit on it", unit_price: 31.11)
+    item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
+    item3 = merchant1.items.create!(name: "Example3", description: "D3", unit_price: 33.33)
+    get "/api/v1/items/find?name=chair"
+    expect(response).to be_successful
+    item = JSON.parse(response.body)["data"]
+    expect(item["attributes"]["description"]).to eq("you can sit on it")
+    expect(item["id"]).to eq(item1.id.to_s)
+  end
+
+  it "can send the closest item matching a search" do
+    merchant1 = Merchant.create!(name: "Jims")
+    item1 = merchant1.items.create!(name: "chair", description: "you can sit on it", unit_price: 31.11)
+    item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
+    item3 = merchant1.items.create!(name: "aeiou", description: "D3", unit_price: 33.33)
+    get "/api/v1/items/find?name=ae"
+    expect(response).to be_successful
+    item = JSON.parse(response.body)["data"]
+    expect(item["attributes"]["description"]).to eq("D3")
+    expect(item["id"]).to eq(item3.id.to_s)
+  end
+
+  it "can send multiple items matching a search" do
+    merchant1 = Merchant.create!(name: "Jims")
+    item1 = merchant1.items.create!(name: "chair", description: "you can sit on it", unit_price: 31.11)
+    item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
+    item3 = merchant1.items.create!(name: "aeiou", description: "D3", unit_price: 33.33)
+    get "/api/v1/items/find_all?description=D"
+    expect(response).to be_successful
+    item = JSON.parse(response.body)["data"]
+    expect(item.length).to eq(2)
+    expect(item.first["attributes"]["description"]).to eq("D2")
+    expect(item.last["attributes"]["description"]).to eq("D3")
+  end
+
 end
