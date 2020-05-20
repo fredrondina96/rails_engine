@@ -80,4 +80,27 @@ describe "Merchants API" do
     merchant2_items = JSON.parse(response.body)["data"]
     expect(merchant2_items.length).to eq(2)
   end
+
+  it "can return a single merchant searched by name" do
+    merchant1 = Merchant.create!(name: "Jims")
+    merchant2 = Merchant.create!(name: "BoB")
+    merchant2 = Merchant.create!(name: "Tim")
+    get "/api/v1/merchants/find?name=Jims"
+    expect(response).to be_successful
+    merchant = JSON.parse(response.body)["data"]
+    expect(merchant["attributes"]["name"]).to eq("Jims")
+    expect(merchant["id"]).to eq(merchant1.id.to_s)
+  end
+
+  it "can return multiple merchants searched by name" do
+    merchant1 = Merchant.create!(name: "Tims")
+    merchant2 = Merchant.create!(name: "BoB")
+    merchant2 = Merchant.create!(name: "Timmy")
+    get "/api/v1/merchants/find_all?name=Tim"
+    expect(response).to be_successful
+    merchants = JSON.parse(response.body)["data"]
+    expect(merchants.length).to eq(2)
+    expect(merchants.first["attributes"]["name"]).to eq("Tims")
+    expect(merchants.last["attributes"]["name"]).to eq("Timmy")
+  end
 end
