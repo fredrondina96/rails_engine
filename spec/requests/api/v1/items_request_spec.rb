@@ -82,7 +82,7 @@ describe "items API" do
   #   expect(merchant_info["attributes"]["name"]).to eq("Jims")
   # end
 
-  it "can send an item matching a search" do
+  it "can send an exact item matching a search" do
     merchant1 = Merchant.create!(name: "Jims")
     item1 = merchant1.items.create!(name: "chair", description: "you can sit on it", unit_price: 31.11)
     item2 = merchant1.items.create!(name: "Example2", description: "D2", unit_price: 32.22)
