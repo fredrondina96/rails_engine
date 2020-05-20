@@ -5,6 +5,11 @@ class Api::V1::Merchants::SearchController < ApplicationController
     render json: MerchantSerializer.new(@merchants.first)
   end
 
+  def index
+    @merchants = filter
+    render json: MerchantSerializer.new(@merchants)
+  end
+
   private
 
   def filter
